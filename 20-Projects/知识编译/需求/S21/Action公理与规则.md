@@ -1,6 +1,6 @@
 ---
 created: "2026-11-04"
-updated: "2026-11-04"
+updated: "2026-11-06"
 type: requirement
 requirement_created: "2026-11-02"
 status: planned
@@ -30,6 +30,12 @@ meego_id: "7388522512"
 11-04 已确认公理、规则相关需求纳入我的 S21；上述 Playbook、Function / Connector、Plan 等草稿内容仍需评审收敛。来源为产品草稿，11-04 补读。
 
 与[本体建设](../../本体建设.md)的消费端验证、测评范围和表达协议相关，具体交集待对齐。
+
+## 11-05 协作边界
+
+Infra 对齐会明确：本体 Action 的端到端结果由编译团队负责，按需向 Infra 提底座需求。公理、规则本轮实现与验收边界仍需收敛，没有新增开发完成证据。
+
+来源：[《聊下agent infra》原始逐字稿](https://bytedance.my.larkoffice.com/minutes/obmy16g8u721mz4g16rk6k52)，32:43–34:25。此分工未将 Playbook、Plan、Function/Connector 自动纳入 S21 承诺。
 
 ## 待办
 
