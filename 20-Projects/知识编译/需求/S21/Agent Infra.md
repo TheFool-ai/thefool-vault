@@ -1,6 +1,6 @@
 ---
 created: 2026-11-02
-updated: "2026-11-06"
+updated: "2026-11-09"
 type: requirement
 requirement_created: 2026-08-31
 meego_id: "7372003123"
@@ -107,3 +107,21 @@ Meego 状态和实际进度不一定一致，以我的反馈为准。
 
 - 在 Codex「S21-知识编译-agent infra」分区讨论本需求。
 - 纳入 [S21 统一晚间跟进](S21需求.md#跟进安排)。本需求确认结束后停止本项跟进，其他 S21 需求继续。
+
+## 11-06 实现与剩余交付
+
+我推动双链路实现并要求推送，KC f0537652 已推送；覆盖双 trigger、流式接入、会话恢复、已有卡片与回退。OpenCode 1.18.25 派生镜像已预装CLI和21个正式Skill，已发布并在知识引擎01完成真实沙箱启动、健康和CLI验证；构建文件移入agent_runtime_control，e7a7260已推送。本地回归9,879项通过、317项跳过，3项失败在原基线复现。
+
+先推进分离沙箱，共用沙箱仍需底座接口。下一步部署KC并绑定Control环境，补齐用户凭据、Run及分布式锁绑定、写入回执到新卡片，再做完整端到端验收。镜像启动验证不等于KC主链路已部署。
+
+来源：11-06 Codex《知识编译-agent infra切换》（local，01a19b43-a2c1-7983-9f52-f4d3fc12ae72），已核对测试、镜像发布、模板注册、真实沙箱和推送输出。[KC分支](https://code.byted.org/dp/knowledge-compiler/tree/codex/7372003123-agent-runtime-integration)、[镜像构建分支](https://code.byted.org/dp/agent_runtime_control/tree/codex/7372003123-opencode-kb-cli)。
+
+## 11-08 联调验收状态
+
+我在01部署后要求验收。Control就绪、VeraG到KC的鉴权及GraphQL基础路由通过；新运行链路的完整验收仍被前置条件阻塞。
+
+- KC仍使用legacy，Control连接及环境绑定未就绪。
+- KC模块授权未就绪，编译空间与模型入口受阻；CLI沙箱模板当次查询未找到。
+- 下一步补齐新后端启用、模块授权、模板与环境绑定，再验流式、断连续跑、续聊、卡片、引用、Skill、写入与降级。11-06的镜像启动验证保留为历史结果，尚无本轮端到端通过证据。
+
+来源：11-08 23:49–23:56 Codex《知识编译-agent infra切换》（local，ID 01a19b43-a2c1-7983-9f52-f4d3fc12ae72），本人部署与验收要求；验收结果文件 /tmp/kc01-accept.X9rxDZ/result.json 标记日期为11-08、result为blocked，原始检查已核对。
