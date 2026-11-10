@@ -5,6 +5,7 @@
 ## 入口
 
 - [个人画像](30-Areas/个人画像.md)：我的背景、关注点和协作偏好。
+- [个人技术成长](30-Areas/个人技术成长.md)：长期技术方向、学习主题和实践中的能力积累。
 - [重要日子](30-Areas/重要日子.md)：纪念日等需要记住的日期。
 - 日记、周记与月度复盘：`10-Journal/Daily/` / `10-Journal/Weekly/` / `10-Journal/Monthly/`
 - 迭代：[知识编译 / S21 需求](20-Projects/知识编译/需求/S21/S21需求.md)
@@ -16,8 +17,10 @@
 - 交付客户：[知识编译 / 国民养老](20-Projects/知识编译/交付客户/国民养老.md)
 - 问题排查：[玉柴资产发布](20-Projects/知识编译/问题排查/玉柴资产发布失败（2.5.0）.md)、[售前 Workspace](20-Projects/知识编译/问题排查/售前环境Workspace阻塞.md)
 - 知识：[LLM Wiki](40-Resources/LLM%20Wiki.md)——本库的维护思路。
+- 知识：[Kubernetes基础](40-Resources/Kubernetes基础.md)——核心概念、运行关系与请求路径。
 - 阅读：[Palantir Ontology架构与数据实时性](40-Resources/Palantir%20Ontology架构与数据实时性.md)——架构、海量数据、增量同步与一致性边界。
 - 调研：[DataTalks 与 DataWeaver](40-Resources/DataTalks与DataWeaver调研.md)——对话式数据分析与可视化数据编排。
+- 调研：[Auto Ontology 实现与知识编译借鉴](40-Resources/Auto%20Ontology实现与知识编译借鉴.md)——结构化数据的语义编译、SQL 资产和问数消费。
 
 页面还不多，这里兼作索引；新增重要页面时补到上面。
 
