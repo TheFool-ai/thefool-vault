@@ -1,6 +1,6 @@
 ---
 created: 2026-11-02
-updated: "2026-11-10"
+updated: "2026-11-11"
 type: requirement
 requirement_created: 2026-08-31
 meego_id: "7372003123"
@@ -8,9 +8,9 @@ meego_id: "7372003123"
 
 知识编译项目下的技术需求，Meego：[【知识编译】Agent Infra](https://meego.larkoffice.com/xqd1pw/story/detail/7372003123)。
 
-## 当前进展（11-09）
+## 当前进展（11-10）
 
-01 已切到 agent_runtime，流式、跨后端续聊、历史卡片、引用与 Skill 传入、断连后继续执行及降级切回通过接口级验收。空间与任务上下文改动 c6b4e5e2 已推送，尚未部署。CLI 业务身份、Task 工作目录对齐和新产物出卡仍未闭环；11-16 提测目标不变。
+01 已部署页面 Cookie 到 KC、个人 Token 查询/按需创建、沙箱 CLI profile 下发和 Hook 清理。测试凭据在真实沙箱验证通过，服务鉴权 Run 流式完成；夜间真实页面 Run 已能列出当前空间的文档元数据，正文读取和基于原文的建模仍未验通。Task 工作目录对齐、父 Run 与分布式锁协作、新产物出卡仍未闭环；11-16 提测目标不变。11-09 已通过的流式、续聊、历史卡片等接口验收保留。
 
 ## S21 安排（11-05 更新）
 
@@ -25,7 +25,7 @@ meego_id: "7372003123"
 
 | 阶段 | 时间 | 目标 | 进展 |
 | --- | --- | --- | --- |
-| 开发与提测 | **2026-11-16 开发完提测** | 我与杨宇航协作完成接入 | 双链路已实现，11-09 部分接口验收通过；身份、工作区与新卡片闭环待完成 |
+| 开发与提测 | **2026-11-16 开发完提测** | 我与杨宇航协作完成接入 | 双链路及 CLI profile 已部署01；接口与测试凭据验证通过，真实页面身份、工作区与新卡片闭环待验 |
 | 效果评测 | 随提测对齐 | 双线效果评测；QA 赵林柳 | 测评口径、环境与结果待补充 |
 | 上线 | **S21，2.7.0** | 沙箱接入、可降级 | 尚无正式上线结果 |
 
@@ -159,3 +159,35 @@ Meego 状态和实际进度不一定一致，以我的反馈为准。
 下一步：确认身份委托与工作区契约，再统一实施；部署上下文改动，验通真实业务读取、文件写入到新卡片，以及跨后端继续编辑。按11-16提测目标检查剩余交付。
 
 来源：2026-11-09 Codex《知识编译-agent infra切换》（local，ID 01a19b43-a2c1-7983-9f52-f4d3fc12ae72），已读取当日实际讨论、验收和推送输出；[01验收记录](/Users/bytedance/Projects/knowledge-compiler-agent-runtime-7372003123/docs/reports/2026-11-09-agent-runtime-knowledge01-acceptance.md)。架构讨论见[原飞书方案](https://bytedance.larkoffice.com/docx/H7dJdIBB6oFE6hxB1VxclEOQnsg)，其中目标方案不作实现结果。
+
+## 11-10 身份接入与 Hook 部署
+
+### 我收敛的实现边界
+
+- **Cookie 透传到 KC**：我要求覆盖所有 KC 页面接口，不限 Agent Run。KC 在空间写权限校验通过、且本轮使用远端 compiler 时，调用 OpenApplication 现有接口先查询个人 Token，仅明确不存在才创建；不重置已有 Token。VeraG 单次转发，移除先前的428二次转发方案。
+- **个人 Token 下发 profile**：Cookie 留在 KC，不进入 Control、沙箱或提示词。Control 将个人 Token 交给本轮沙箱，由 CLI 原生凭据存储激活 kc-run。实际采用的是个人 Token；11-09的应用UAT加短期Run凭据仍是历史候选，未实现为本轮凭据方案。
+- **KC 专属逻辑放 Hook**：我提出使用 agent.before，并确认 agent.end 清理。开始 Hook 先读取并删除临时凭据、写入 profile，再执行后续业务 Hook；结束 Hook 覆盖成功、失败和取消。清理的是沙箱副本，个人 Token 本身不会因 Run 结束自动撤销。
+
+### 已交付与验证
+
+我要求推送并部署，已核实以下功能分支和01运行结果：
+
+| 组件 | 提交与结果 |
+| --- | --- |
+| VeraG | [49beb9b7b](https://code.byted.org/dp/verag/commit/49beb9b7b7e81780496d61d24133f6b4904c3bef)，页面 Cookie 透传；01滚动部署就绪。 |
+| KC | [e13a7f0e](https://code.byted.org/dp/knowledge-compiler/commit/e13a7f0e5889b0ab250346a219f9a9f1c73fc4c1)，取个人 Token 并下发 profile；01部署就绪，启用 agent_runtime。 |
+| Control / OpenCode 派生镜像 | Control 9c5dfa6 已部署；Hook 改造 [b1121bc](https://code.byted.org/dp/agent_runtime_control/commit/b1121bc85cf65ea1ac02a5f7608d062a84f54644) 已推送，镜像1.18.25-hook-b1121bc-20261110已发布，项目专用与默认沙箱模板均切换到该版。新建沙箱生效。 |
+
+- 服务鉴权发起的真实 KC Run 返回CLI版本和完整流式结束，任务 `388111c59cf6483aaa5c25d5eab551e9`。
+- 使用测试凭据，在01新建的真实沙箱运行原生CLI，验证agent.before激活profile，以及成功、失败、取消后的凭据清理；测试通过，验收沙箱已删除。
+- 当前是01部署和测试结果，尚无正式2.7.0合码、提测或上线确认。
+
+### 下一步
+
+夜间真实页面 Run 已通过 CLI 列出当前空间两份文档的元数据和来源映射；正文仍未读到，当前 Schema 草稿缺少原文依据。验收阻碍是运行时实际使用的 Skill 与 CLI 契约未对齐，需要修正后回归正文读取和基于原文的建模，不能用元数据可见代替完整业务验收。
+
+再完成Task工作目录映射、父Run与分布式锁协作、业务写入回执和新卡片，回归跨后端继续编辑。11-10 尚无 Skill 修正后的验收结果。
+
+来源：2026-11-10 Codex《知识编译-agent infra切换》（local，ID 01a19b43-a2c1-7983-9f52-f4d3fc12ae72），用户明确的透传范围、Hook取舍及推送部署要求；已核对远端提交、镜像digest、滚动部署、流式结果与真实沙箱测试输出。[接入说明](/Users/bytedance/Projects/knowledge-compiler-agent-runtime-7372003123/docs/knowledge-base/20-agent-runtime/control-backend.md:57)。
+
+夜间补充依据：同一聊天11-10 22点后用户提供的实际页面结果，以及当晚回读的工具记录；会话 `a2eea1d0e6894a0aaedbdb387914d7bf` 中资源列表返回知识库52、文档200/199的来源映射，未取得正文读取成功结果。
