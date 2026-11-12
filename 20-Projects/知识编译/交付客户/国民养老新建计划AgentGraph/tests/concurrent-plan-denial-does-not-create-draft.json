@@ -1,0 +1,64 @@
+{
+  "schema": "agent-graph.test.v1",
+  "name": "concurrent-plan-denial-does-not-create-draft",
+  "graph": "prepare-plan",
+  "entry": "default",
+  "state": {
+    "facts": {
+      "snapshot": {
+        "ready": true,
+        "revision": "snapshot-v1"
+      },
+      "context": {
+        "authorized": true,
+        "userId": "demo-user",
+        "caseId": "demo-case",
+        "planId": null
+      },
+      "runtime": {
+        "phase": "prepare"
+      },
+      "plan": {
+        "effective": false
+      },
+      "decision": {
+        "createDraftAllowed": false,
+        "confirmPlanAllowed": true
+      },
+      "evidence": {
+        "inflight": {
+          "valid": true,
+          "receipt": "demo-receipt-inflight"
+        },
+        "gap_input": {
+          "valid": true,
+          "receipt": "demo-receipt-gap_input"
+        },
+        "gap": {
+          "valid": true,
+          "receipt": "demo-receipt-gap"
+        },
+        "account": {
+          "valid": true,
+          "receipt": "demo-receipt-account"
+        },
+        "risk": {
+          "valid": true,
+          "receipt": "demo-receipt-risk"
+        },
+        "parameters": {
+          "valid": true,
+          "receipt": "demo-receipt-parameters"
+        },
+        "parameters_consent": {
+          "valid": true,
+          "receipt": "demo-receipt-parameters_consent"
+        }
+      }
+    }
+  },
+  "expect": {
+    "statusCode": "actionable",
+    "primaryNode": "reconcile"
+  }
+}

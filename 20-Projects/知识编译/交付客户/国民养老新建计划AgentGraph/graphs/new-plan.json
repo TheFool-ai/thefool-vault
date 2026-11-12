@@ -1,0 +1,187 @@
+{
+  "schema": "agent-graph.graph.v1",
+  "id": "new-plan",
+  "entrypoints": {
+    "default": "observe"
+  },
+  "nodes": [
+    {
+      "id": "observe",
+      "kind": "action",
+      "reasonCode": "route.new-plan.observe",
+      "action": "actions/observe.json",
+      "satisfiedBy": [
+        {
+          "path": "snapshot.ready",
+          "equals": true
+        },
+        {
+          "path": "context.authorized",
+          "equals": true
+        }
+      ]
+    },
+    {
+      "id": "prepare",
+      "kind": "subgraph",
+      "graph": "prepare-plan",
+      "entry": "default",
+      "requiresFacts": [
+        {
+          "path": "runtime.phase",
+          "equals": "prepare"
+        }
+      ]
+    },
+    {
+      "id": "purchase",
+      "kind": "subgraph",
+      "graph": "purchase-plan",
+      "entry": "default",
+      "requiresFacts": [
+        {
+          "path": "runtime.phase",
+          "equals": "trade"
+        }
+      ]
+    },
+    {
+      "id": "recover",
+      "kind": "action",
+      "reasonCode": "route.new-plan.recover",
+      "action": "actions/reconcile.json",
+      "requiresFacts": [
+        {
+          "path": "runtime.phase",
+          "equals": "recover"
+        }
+      ]
+    },
+    {
+      "id": "effective-evidence",
+      "kind": "action",
+      "reasonCode": "route.new-plan.effective-evidence",
+      "action": "actions/reconcile.json",
+      "requiresFacts": [
+        {
+          "path": "runtime.phase",
+          "equals": "effective"
+        }
+      ],
+      "satisfiedBy": [
+        {
+          "path": "plan.effective",
+          "equals": true
+        }
+      ]
+    },
+    {
+      "id": "effective",
+      "kind": "terminal",
+      "terminalOutcome": "completed"
+    },
+    {
+      "id": "prepared",
+      "kind": "terminal",
+      "terminalOutcome": "partial"
+    },
+    {
+      "id": "purchased",
+      "kind": "terminal",
+      "terminalOutcome": "completed"
+    },
+    {
+      "id": "await-event",
+      "kind": "terminal",
+      "terminalOutcome": "partial"
+    },
+    {
+      "id": "needs-attention",
+      "kind": "terminal",
+      "terminalOutcome": "unverified",
+      "join": "any"
+    }
+  ],
+  "edges": [
+    {
+      "from": "observe",
+      "to": "prepare",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "observe",
+      "to": "purchase",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "observe",
+      "to": "recover",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "observe",
+      "to": "effective-evidence",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "effective-evidence",
+      "to": "effective",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "prepare",
+      "to": "prepared",
+      "outcomes": [
+        "completed",
+        "partial"
+      ]
+    },
+    {
+      "from": "purchase",
+      "to": "purchased",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "purchase",
+      "to": "await-event",
+      "outcomes": [
+        "partial"
+      ]
+    },
+    {
+      "from": "prepare",
+      "to": "needs-attention",
+      "outcomes": [
+        "unverified",
+        "failed"
+      ]
+    },
+    {
+      "from": "purchase",
+      "to": "needs-attention",
+      "outcomes": [
+        "unverified",
+        "failed"
+      ]
+    },
+    {
+      "from": "recover",
+      "to": "needs-attention",
+      "outcomes": [
+        "completed"
+      ]
+    }
+  ]
+}

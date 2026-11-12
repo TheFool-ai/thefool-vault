@@ -1,0 +1,35 @@
+{
+  "schema": "agent-graph.test.v1",
+  "name": "refresh-stale-snapshot",
+  "graph": "new-plan",
+  "entry": "default",
+  "state": {
+    "facts": {
+      "snapshot": {
+        "ready": false,
+        "revision": "snapshot-v1"
+      },
+      "context": {
+        "authorized": true,
+        "userId": "demo-user",
+        "caseId": "demo-case",
+        "planId": null
+      },
+      "runtime": {
+        "phase": "prepare"
+      },
+      "plan": {
+        "effective": false
+      },
+      "decision": {
+        "createDraftAllowed": true,
+        "confirmPlanAllowed": true
+      },
+      "evidence": {}
+    }
+  },
+  "expect": {
+    "statusCode": "actionable",
+    "primaryNode": "observe"
+  }
+}

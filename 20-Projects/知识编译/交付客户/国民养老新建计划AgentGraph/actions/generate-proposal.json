@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "generate-proposal",
+  "runner": "host",
+  "effect": "external",
+  "handler": "pension.generate-proposal"
+}

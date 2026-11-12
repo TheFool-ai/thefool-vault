@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "underwriting",
+  "runner": "host",
+  "effect": "external",
+  "handler": "pension.underwriting"
+}

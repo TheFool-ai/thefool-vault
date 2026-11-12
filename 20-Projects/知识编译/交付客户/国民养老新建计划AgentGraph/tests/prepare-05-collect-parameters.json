@@ -1,0 +1,56 @@
+{
+  "schema": "agent-graph.test.v1",
+  "name": "prepare-05-collect-parameters",
+  "graph": "prepare-plan",
+  "entry": "default",
+  "state": {
+    "facts": {
+      "snapshot": {
+        "ready": true,
+        "revision": "snapshot-v1"
+      },
+      "context": {
+        "authorized": true,
+        "userId": "demo-user",
+        "caseId": "demo-case",
+        "planId": null
+      },
+      "runtime": {
+        "phase": "prepare"
+      },
+      "plan": {
+        "effective": false
+      },
+      "decision": {
+        "createDraftAllowed": true,
+        "confirmPlanAllowed": true
+      },
+      "evidence": {
+        "inflight": {
+          "valid": true,
+          "receipt": "demo-receipt-inflight"
+        },
+        "gap_input": {
+          "valid": true,
+          "receipt": "demo-receipt-gap_input"
+        },
+        "gap": {
+          "valid": true,
+          "receipt": "demo-receipt-gap"
+        },
+        "account": {
+          "valid": true,
+          "receipt": "demo-receipt-account"
+        },
+        "risk": {
+          "valid": true,
+          "receipt": "demo-receipt-risk"
+        }
+      }
+    }
+  },
+  "expect": {
+    "statusCode": "actionable",
+    "primaryNode": "collect-parameters"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "purchase-information",
+  "runner": "host",
+  "effect": "external",
+  "handler": "pension.purchase-information"
+}

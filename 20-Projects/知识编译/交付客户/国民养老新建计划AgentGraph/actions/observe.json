@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "observe",
+  "runner": "host",
+  "effect": "read",
+  "handler": "pension.observe"
+}

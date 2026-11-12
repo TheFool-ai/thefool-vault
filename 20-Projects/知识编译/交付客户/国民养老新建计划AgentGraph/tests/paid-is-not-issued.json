@@ -1,0 +1,59 @@
+{
+  "schema": "agent-graph.test.v1",
+  "name": "paid-is-not-issued",
+  "graph": "purchase-plan",
+  "entry": "default",
+  "state": {
+    "facts": {
+      "snapshot": {
+        "ready": true,
+        "revision": "snapshot-v1"
+      },
+      "context": {
+        "authorized": true,
+        "userId": "demo-user",
+        "caseId": "demo-case",
+        "planId": "demo-plan-b"
+      },
+      "runtime": {
+        "phase": "trade"
+      },
+      "plan": {
+        "effective": false
+      },
+      "decision": {
+        "createDraftAllowed": true,
+        "confirmPlanAllowed": true
+      },
+      "evidence": {
+        "purchase_information": {
+          "valid": true,
+          "receipt": "demo-receipt-purchase_information"
+        },
+        "underwriting": {
+          "valid": true,
+          "receipt": "demo-receipt-underwriting"
+        },
+        "product_selection": {
+          "valid": true,
+          "receipt": "demo-receipt-product_selection"
+        },
+        "purchase_consent": {
+          "valid": true,
+          "receipt": "demo-receipt-purchase_consent"
+        },
+        "payment": {
+          "valid": true,
+          "receipt": "demo-receipt-payment"
+        },
+        "issuance": {
+          "valid": false
+        }
+      }
+    }
+  },
+  "expect": {
+    "statusCode": "actionable",
+    "primaryNode": "observe-issuance"
+  }
+}

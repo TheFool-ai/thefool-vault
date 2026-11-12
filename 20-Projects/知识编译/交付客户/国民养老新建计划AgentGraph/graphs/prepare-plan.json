@@ -1,0 +1,523 @@
+{
+  "schema": "agent-graph.graph.v1",
+  "id": "prepare-plan",
+  "entrypoints": {
+    "default": "check-inflight"
+  },
+  "nodes": [
+    {
+      "id": "check-inflight",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.check-inflight",
+      "satisfiedBy": [
+        {
+          "path": "evidence.inflight.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/check-inflight.json"
+    },
+    {
+      "id": "prepare-gap-input",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.prepare-gap-input",
+      "satisfiedBy": [
+        {
+          "path": "evidence.gap_input.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/prepare-gap-input.json"
+    },
+    {
+      "id": "ensure-gap",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.ensure-gap",
+      "satisfiedBy": [
+        {
+          "path": "evidence.gap.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/ensure-gap.json"
+    },
+    {
+      "id": "ensure-account",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.ensure-account",
+      "satisfiedBy": [
+        {
+          "path": "evidence.account.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/ensure-account.json"
+    },
+    {
+      "id": "ensure-risk",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.ensure-risk",
+      "satisfiedBy": [
+        {
+          "path": "evidence.risk.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/ensure-risk.json"
+    },
+    {
+      "id": "collect-parameters",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.collect-parameters",
+      "satisfiedBy": [
+        {
+          "path": "evidence.parameters.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/collect-parameters.json"
+    },
+    {
+      "id": "confirm-parameters",
+      "kind": "gate",
+      "reasonCode": "route.prepare-plan.confirm-parameters",
+      "satisfiedBy": [
+        {
+          "path": "evidence.parameters_consent.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "gate": {
+        "id": "confirm-parameters",
+        "prompt": "请确认当前养老计划参数。",
+        "delegatable": false
+      },
+      "inspectionAction": "actions/inspect-confirm-parameters.json",
+      "resolutionAction": "actions/record-confirm-parameters.json"
+    },
+    {
+      "id": "create-draft",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.create-draft",
+      "satisfiedBy": [
+        {
+          "path": "evidence.draft.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/create-draft.json",
+      "requiresFacts": [
+        {
+          "path": "decision.createDraftAllowed",
+          "equals": true
+        }
+      ]
+    },
+    {
+      "id": "generate-proposal",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.generate-proposal",
+      "satisfiedBy": [
+        {
+          "path": "evidence.proposal.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/generate-proposal.json"
+    },
+    {
+      "id": "confirm-proposal",
+      "kind": "gate",
+      "reasonCode": "route.prepare-plan.confirm-proposal",
+      "satisfiedBy": [
+        {
+          "path": "evidence.proposal_consent.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "gate": {
+        "id": "confirm-proposal",
+        "prompt": "请确认当前版本的完整养老方案。",
+        "delegatable": false
+      },
+      "inspectionAction": "actions/inspect-confirm-proposal.json",
+      "resolutionAction": "actions/record-confirm-proposal.json"
+    },
+    {
+      "id": "commit-plan-confirmation",
+      "kind": "action",
+      "reasonCode": "route.prepare-plan.commit-plan-confirmation",
+      "satisfiedBy": [
+        {
+          "path": "evidence.plan_confirmation.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/prepare.md"
+        ]
+      },
+      "action": "actions/commit-plan-confirmation.json",
+      "requiresFacts": [
+        {
+          "path": "decision.confirmPlanAllowed",
+          "equals": true
+        }
+      ]
+    },
+    {
+      "id": "reconcile",
+      "kind": "action",
+      "join": "any",
+      "reasonCode": "route.prepare-plan.reconcile",
+      "action": "actions/reconcile.json",
+      "resources": {
+        "required": [
+          "resources/wait.md"
+        ]
+      }
+    },
+    {
+      "id": "park",
+      "kind": "action",
+      "join": "any",
+      "reasonCode": "route.prepare-plan.park",
+      "action": "actions/park.json",
+      "resources": {
+        "required": [
+          "resources/wait.md"
+        ]
+      }
+    },
+    {
+      "id": "done",
+      "kind": "terminal",
+      "terminalOutcome": "completed"
+    },
+    {
+      "id": "await-event",
+      "kind": "terminal",
+      "terminalOutcome": "partial"
+    },
+    {
+      "id": "needs-reconciliation",
+      "kind": "terminal",
+      "terminalOutcome": "unverified"
+    }
+  ],
+  "edges": [
+    {
+      "from": "check-inflight",
+      "to": "prepare-gap-input",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "check-inflight",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "check-inflight",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "prepare-gap-input",
+      "to": "ensure-gap",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "prepare-gap-input",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "prepare-gap-input",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "ensure-gap",
+      "to": "ensure-account",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "ensure-gap",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "ensure-gap",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "ensure-account",
+      "to": "ensure-risk",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "ensure-account",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "ensure-account",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "ensure-risk",
+      "to": "collect-parameters",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "ensure-risk",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "ensure-risk",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "collect-parameters",
+      "to": "confirm-parameters",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "collect-parameters",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "collect-parameters",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "confirm-parameters",
+      "to": "create-draft",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "confirm-parameters",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "create-draft",
+      "to": "generate-proposal",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "create-draft",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "create-draft",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "generate-proposal",
+      "to": "confirm-proposal",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "generate-proposal",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "generate-proposal",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "confirm-proposal",
+      "to": "commit-plan-confirmation",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "confirm-proposal",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "commit-plan-confirmation",
+      "to": "done",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "commit-plan-confirmation",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "commit-plan-confirmation",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "park",
+      "to": "await-event",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "reconcile",
+      "to": "needs-reconciliation",
+      "outcomes": [
+        "completed"
+      ]
+    }
+  ]
+}

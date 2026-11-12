@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "collect-parameters",
+  "runner": "host",
+  "effect": "write",
+  "handler": "pension.collect-parameters"
+}

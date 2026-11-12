@@ -1,0 +1,40 @@
+{
+  "schema": "agent-graph.test.v1",
+  "name": "prepare-01-prepare-gap-input",
+  "graph": "prepare-plan",
+  "entry": "default",
+  "state": {
+    "facts": {
+      "snapshot": {
+        "ready": true,
+        "revision": "snapshot-v1"
+      },
+      "context": {
+        "authorized": true,
+        "userId": "demo-user",
+        "caseId": "demo-case",
+        "planId": null
+      },
+      "runtime": {
+        "phase": "prepare"
+      },
+      "plan": {
+        "effective": false
+      },
+      "decision": {
+        "createDraftAllowed": true,
+        "confirmPlanAllowed": true
+      },
+      "evidence": {
+        "inflight": {
+          "valid": true,
+          "receipt": "demo-receipt-inflight"
+        }
+      }
+    }
+  },
+  "expect": {
+    "statusCode": "actionable",
+    "primaryNode": "prepare-gap-input"
+  }
+}

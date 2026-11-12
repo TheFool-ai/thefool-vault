@@ -1,0 +1,55 @@
+{
+  "schema": "agent-graph.test.v1",
+  "name": "claimed-completion-needs-independent-evidence",
+  "graph": "prepare-plan",
+  "entry": "default",
+  "state": {
+    "facts": {
+      "snapshot": {
+        "ready": true,
+        "revision": "snapshot-v1"
+      },
+      "context": {
+        "authorized": true,
+        "userId": "demo-user",
+        "caseId": "demo-case",
+        "planId": null
+      },
+      "runtime": {
+        "phase": "prepare"
+      },
+      "plan": {
+        "effective": false
+      },
+      "decision": {
+        "createDraftAllowed": true,
+        "confirmPlanAllowed": true
+      },
+      "evidence": {
+        "inflight": {
+          "valid": true,
+          "receipt": "demo-receipt-inflight"
+        },
+        "gap_input": {
+          "valid": true,
+          "receipt": "demo-receipt-gap_input"
+        },
+        "gap": {
+          "valid": true,
+          "receipt": "demo-receipt-gap"
+        },
+        "account": {
+          "valid": true,
+          "receipt": "demo-receipt-account"
+        }
+      }
+    },
+    "outcomes": {
+      "prepare-plan/ensure-risk": "completed"
+    }
+  },
+  "expect": {
+    "statusCode": "actionable",
+    "primaryNode": "reconcile"
+  }
+}

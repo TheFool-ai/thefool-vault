@@ -1,0 +1,310 @@
+{
+  "schema": "agent-graph.graph.v1",
+  "id": "purchase-plan",
+  "entrypoints": {
+    "default": "purchase-information"
+  },
+  "nodes": [
+    {
+      "id": "purchase-information",
+      "kind": "action",
+      "reasonCode": "route.purchase-plan.purchase-information",
+      "satisfiedBy": [
+        {
+          "path": "evidence.purchase_information.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/trade.md"
+        ]
+      },
+      "action": "actions/purchase-information.json"
+    },
+    {
+      "id": "underwriting",
+      "kind": "action",
+      "reasonCode": "route.purchase-plan.underwriting",
+      "satisfiedBy": [
+        {
+          "path": "evidence.underwriting.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/trade.md"
+        ]
+      },
+      "action": "actions/underwriting.json"
+    },
+    {
+      "id": "accept-product-selection",
+      "kind": "gate",
+      "reasonCode": "route.purchase-plan.accept-product-selection",
+      "satisfiedBy": [
+        {
+          "path": "evidence.product_selection.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/trade.md"
+        ]
+      },
+      "gate": {
+        "id": "accept-product-selection",
+        "prompt": "请确认本次购买的产品范围与金额。",
+        "delegatable": false
+      },
+      "inspectionAction": "actions/inspect-accept-product-selection.json",
+      "resolutionAction": "actions/record-accept-product-selection.json"
+    },
+    {
+      "id": "confirm-purchase",
+      "kind": "gate",
+      "reasonCode": "route.purchase-plan.confirm-purchase",
+      "satisfiedBy": [
+        {
+          "path": "evidence.purchase_consent.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/trade.md"
+        ]
+      },
+      "gate": {
+        "id": "confirm-purchase",
+        "prompt": "请在业务页面确认本次购买信息及支付。",
+        "delegatable": false
+      },
+      "inspectionAction": "actions/inspect-confirm-purchase.json",
+      "resolutionAction": "actions/record-confirm-purchase.json"
+    },
+    {
+      "id": "payment",
+      "kind": "action",
+      "reasonCode": "route.purchase-plan.payment",
+      "satisfiedBy": [
+        {
+          "path": "evidence.payment.valid",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/trade.md"
+        ]
+      },
+      "action": "actions/payment.json"
+    },
+    {
+      "id": "observe-issuance",
+      "kind": "action",
+      "reasonCode": "route.purchase-plan.observe-issuance",
+      "satisfiedBy": [
+        {
+          "path": "evidence.issuance.valid",
+          "equals": true
+        },
+        {
+          "path": "plan.effective",
+          "equals": true
+        }
+      ],
+      "resources": {
+        "required": [
+          "resources/trade.md"
+        ]
+      },
+      "action": "actions/observe-issuance.json"
+    },
+    {
+      "id": "reconcile",
+      "kind": "action",
+      "join": "any",
+      "reasonCode": "route.purchase-plan.reconcile",
+      "action": "actions/reconcile.json",
+      "resources": {
+        "required": [
+          "resources/wait.md"
+        ]
+      }
+    },
+    {
+      "id": "park",
+      "kind": "action",
+      "join": "any",
+      "reasonCode": "route.purchase-plan.park",
+      "action": "actions/park.json",
+      "resources": {
+        "required": [
+          "resources/wait.md"
+        ]
+      }
+    },
+    {
+      "id": "done",
+      "kind": "terminal",
+      "terminalOutcome": "completed"
+    },
+    {
+      "id": "await-event",
+      "kind": "terminal",
+      "terminalOutcome": "partial"
+    },
+    {
+      "id": "needs-reconciliation",
+      "kind": "terminal",
+      "terminalOutcome": "unverified"
+    }
+  ],
+  "edges": [
+    {
+      "from": "purchase-information",
+      "to": "underwriting",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "purchase-information",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "purchase-information",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "underwriting",
+      "to": "accept-product-selection",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "underwriting",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "underwriting",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "accept-product-selection",
+      "to": "confirm-purchase",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "accept-product-selection",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "confirm-purchase",
+      "to": "payment",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "confirm-purchase",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "payment",
+      "to": "observe-issuance",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "payment",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "payment",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "observe-issuance",
+      "to": "done",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "observe-issuance",
+      "to": "reconcile",
+      "outcomes": [
+        "unverified",
+        "failed",
+        "blocked"
+      ]
+    },
+    {
+      "from": "observe-issuance",
+      "to": "park",
+      "outcomes": [
+        "partial",
+        "waiting-user"
+      ]
+    },
+    {
+      "from": "park",
+      "to": "await-event",
+      "outcomes": [
+        "completed"
+      ]
+    },
+    {
+      "from": "reconcile",
+      "to": "needs-reconciliation",
+      "outcomes": [
+        "completed"
+      ]
+    }
+  ]
+}

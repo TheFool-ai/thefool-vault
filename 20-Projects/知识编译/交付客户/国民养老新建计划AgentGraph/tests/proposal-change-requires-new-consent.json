@@ -1,0 +1,76 @@
+{
+  "schema": "agent-graph.test.v1",
+  "name": "proposal-change-requires-new-consent",
+  "graph": "prepare-plan",
+  "entry": "default",
+  "state": {
+    "facts": {
+      "snapshot": {
+        "ready": true,
+        "revision": "snapshot-v1"
+      },
+      "context": {
+        "authorized": true,
+        "userId": "demo-user",
+        "caseId": "demo-case",
+        "planId": null
+      },
+      "runtime": {
+        "phase": "prepare"
+      },
+      "plan": {
+        "effective": false
+      },
+      "decision": {
+        "createDraftAllowed": true,
+        "confirmPlanAllowed": true
+      },
+      "evidence": {
+        "inflight": {
+          "valid": true,
+          "receipt": "demo-receipt-inflight"
+        },
+        "gap_input": {
+          "valid": true,
+          "receipt": "demo-receipt-gap_input"
+        },
+        "gap": {
+          "valid": true,
+          "receipt": "demo-receipt-gap"
+        },
+        "account": {
+          "valid": true,
+          "receipt": "demo-receipt-account"
+        },
+        "risk": {
+          "valid": true,
+          "receipt": "demo-receipt-risk"
+        },
+        "parameters": {
+          "valid": true,
+          "receipt": "demo-receipt-parameters"
+        },
+        "parameters_consent": {
+          "valid": true,
+          "receipt": "demo-receipt-parameters_consent"
+        },
+        "draft": {
+          "valid": true,
+          "receipt": "demo-receipt-draft"
+        },
+        "proposal": {
+          "valid": true,
+          "receipt": "demo-receipt-proposal"
+        },
+        "proposal_consent": {
+          "valid": false,
+          "receipt": "old-proposal-receipt"
+        }
+      }
+    }
+  },
+  "expect": {
+    "statusCode": "waiting-user",
+    "primaryNode": "confirm-proposal"
+  }
+}

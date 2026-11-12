@@ -1,0 +1,15 @@
+{
+  "schema": "agent-graph.provider.v1",
+  "id": "pension.new-plan.design",
+  "version": "0.1.0",
+  "description": "新建养老计划的候选工作契约；Host handlers 为接口声明，未接入任何真实业务。",
+  "graphs": [
+    "graphs/new-plan.json",
+    "graphs/prepare-plan.json",
+    "graphs/purchase-plan.json"
+  ],
+  "compatibility": {
+    "agentGraph": "^0.3.1",
+    "node": ">=20"
+  }
+}

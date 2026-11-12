@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "inspect-confirm-purchase",
+  "runner": "host",
+  "effect": "read",
+  "handler": "pension.inspect-confirm-purchase"
+}

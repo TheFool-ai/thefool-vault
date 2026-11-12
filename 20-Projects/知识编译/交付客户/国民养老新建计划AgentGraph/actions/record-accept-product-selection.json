@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "record-accept-product-selection",
+  "runner": "host",
+  "effect": "write",
+  "handler": "pension.record-accept-product-selection"
+}

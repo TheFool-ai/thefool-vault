@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "create-draft",
+  "runner": "host",
+  "effect": "write",
+  "handler": "pension.create-draft"
+}

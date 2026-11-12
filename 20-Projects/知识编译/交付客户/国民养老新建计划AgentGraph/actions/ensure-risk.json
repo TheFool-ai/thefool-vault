@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "ensure-risk",
+  "runner": "host",
+  "effect": "external",
+  "handler": "pension.ensure-risk"
+}

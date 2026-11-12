@@ -1,6 +1,6 @@
 ---
 created: 2026-11-02
-updated: "2026-11-11"
+updated: "2026-11-12"
 type: requirement
 requirement_created: 2026-08-31
 meego_id: "7372003123"
@@ -8,9 +8,11 @@ meego_id: "7372003123"
 
 知识编译项目下的技术需求，Meego：[【知识编译】Agent Infra](https://meego.larkoffice.com/xqd1pw/story/detail/7372003123)。
 
-## 当前进展（11-10）
+## 当前进展（11-11）
 
-01 已部署页面 Cookie 到 KC、个人 Token 查询/按需创建、沙箱 CLI profile 下发和 Hook 清理。测试凭据在真实沙箱验证通过，服务鉴权 Run 流式完成；夜间真实页面 Run 已能列出当前空间的文档元数据，正文读取和基于原文的建模仍未验通。Task 工作目录对齐、父 Run 与分布式锁协作、新产物出卡仍未闭环；11-16 提测目标不变。11-09 已通过的流式、续聊、历史卡片等接口验收保留。
+01 已验通普通文件从 OpenCode 的 `write/bash` 输出到 KC 登记、新卡片和历史回读；真实页面 CLI 已成功导出文档正文。Thinking、工具参数等待事件与 Control 空闲心跳已部署并通过服务端实链路验证。
+
+KC、Control 和沙箱 CLI 已接入短期 `run_grant`，同一 Task 续聊共用 thread，每轮 Run 独立；持锁回调、其他 Run 拦截和凭据撤销已验证。KC Lua 修复已在01生效，22:12验通正式 Schema 的 `open → 编辑 → validate → submit → 出卡`，历史会话可见待审卡片。其他运行仍出现模型重复输出、无法形成有效工具参数的问题，影响验收稳定性；双目录挂载和跨后端继续编辑仍待验通，11-16提测目标不变。
 
 ## S21 安排（11-05 更新）
 
@@ -25,7 +27,7 @@ meego_id: "7372003123"
 
 | 阶段 | 时间 | 目标 | 进展 |
 | --- | --- | --- | --- |
-| 开发与提测 | **2026-11-16 开发完提测** | 我与杨宇航协作完成接入 | 双链路及 CLI profile 已部署01；接口与测试凭据验证通过，真实页面身份、工作区与新卡片闭环待验 |
+| 开发与提测 | **2026-11-16 开发完提测** | 我与杨宇航协作完成接入 | 普通文件出卡、正文导出、流式增强与Run凭据已部署01；正式Schema提交与待审出卡已验通；模型输出稳定性、双挂载及跨后端编辑待验 |
 | 效果评测 | 随提测对齐 | 双线效果评测；QA 赵林柳 | 测评口径、环境与结果待补充 |
 | 上线 | **S21，2.7.0** | 沙箱接入、可降级 | 尚无正式上线结果 |
 
@@ -191,3 +193,39 @@ Meego 状态和实际进度不一定一致，以我的反馈为准。
 来源：2026-11-10 Codex《知识编译-agent infra切换》（local，ID 01a19b43-a2c1-7983-9f52-f4d3fc12ae72），用户明确的透传范围、Hook取舍及推送部署要求；已核对远端提交、镜像digest、滚动部署、流式结果与真实沙箱测试输出。[接入说明](/Users/bytedance/Projects/knowledge-compiler-agent-runtime-7372003123/docs/knowledge-base/20-agent-runtime/control-backend.md:57)。
 
 夜间补充依据：同一聊天11-10 22点后用户提供的实际页面结果，以及当晚回读的工具记录；会话 `a2eea1d0e6894a0aaedbdb387914d7bf` 中资源列表返回知识库52、文档200/199的来源映射，未取得正文读取成功结果。
+
+## 11-11 执行边界与交付
+
+### 我确认的边界
+
+- **KC 准备环境，Agent 自主执行**：KC 管权限、Space/Task绑定、分布式锁、会话与业务产物；runtime 落实执行环境。CLI用法和处理步骤交给预装Skill。走agent-runtime时，KC不再刷新或下发Skill；本地agent沿用原流程。
+- **Task跨轮，Run独立**：我明确下游 `threadId/session_id` 应使用 `task_id`，`runId` 使用本轮 `execution_id`。个人Token负责用户身份，新增短期 `run_grant` 绑定用户、租户、Space、Task、Run和当前Turn，通过私有profile通道递送，CLI自动携带，不放进提示词。
+- **兼容独立CLI**：我要求grant缺失或为空时保持原有用户鉴权、独立加锁；非空但失效时拒绝，不能退回普通调用。KC校验grant与当前锁持有者后复用父Run，结束时撤销grant。页面Agent的直接建Task命令仍由 `tool.before` 拦截。
+- **两类产物分开**：我确认本轮新增登记主要覆盖 `write/bash` 的普通文件；`schema submit` 继续走已有业务登记。普通文件卡不能证明Schema正式提交成功。
+
+### 已部署与验收
+
+| 交付 | 已核实结果 |
+| --- | --- |
+| 普通文件登记 | KC [de2beed4](https://code.byted.org/dp/knowledge-compiler/commit/de2beed46846828831ddc015dc3a1db52b51587c)已推送并部署01。真实Run生成 `outputs/` 文件，收到1张新文件卡；卡片正文与写入内容一致，会话历史保留同一卡片。验收Task `1e25892eda734d94a863a69df0d319c3`，产物 `16be7093cb424fe4a22ed0f72ec0e919`。 |
+| 流式增强 | KC [d627ba74](https://code.byted.org/dp/knowledge-compiler/commit/d627ba74e9e8d97ae00aad6bc2906f04c0dd7b7d)、Control 4e5a2cd已部署。真实Run `d6e10b2f546649b5bf0c097650d8eefe` 收到2段完整thinking、234个reasoning增量；126秒Bash期间收到8次心跳并正常结束。工具参数等待事件已映射，浏览器展示效果未单独验收。 |
+| Run凭据与续聊 | KC [134ec316](https://code.byted.org/dp/knowledge-compiler/commit/134ec3164e24e1b5d346df5ab23b88d1fafcf17e)、Control [ebd3255](https://code.byted.org/dp/agent_runtime_control/commit/ebd3255331522b9593f17a8df892a76d0d907844)、CLI [a0966d2](https://code.byted.org/dp/kb-cli/commit/a0966d2f61559f1417c0f2df1d43e6c7d550507b)已推送并部署。CLI随01沙箱镜像交付，两个模板均验证版本、grant能力和21个预装Skill。两轮帮助命令验证同一Task复用thread、Run各自独立；01锁校验通过同Run回调、拦截其他Run、撤销后拒绝。 |
+| 真实正文读取 | 我提供的页面工具结果显示 `doc markdown export` 成功导出文档199，下载1份、89,175字节、无部分失败，服务端确认个人profile身份。正文读取已超出11-10仅元数据可见的状态；正式建模提交继续单独验收。 |
+
+最终沙箱镜像为 `1.18.25-tmp-c4230c2-20261111`。01两个模板各启动新沙箱，确认预装Skill及CLI目录可读，临时文件操作通过。此处保留最终能力结果，不展开调试经过。
+
+### 正式 Schema 提交验收（22:12）
+
+我要求修复并在真实页面验收，KC `dfc1639e` 已部署01。验收Task `18b7338295d44d0798d8d2632f4c5fae` 于22:05打开工作副本，22:11:44校验返回 `valid=true`，22:12:09提交成功，22:12:17整轮完成。22:16重新打开历史会话，确认「车辆验收回归本体Schema」审阅卡片仍在。此次交付为第1版待审产物，未发布资产。
+
+[01验收会话](https://e16-88-213cdpdev.datarangers-onpremise.volces.com/marketing_agent/1/knowledge-base/knowledge-compile/detail?space_id=01b7d91d8e8b49439e41d70fe28fe97e&task_id=18b7338295d44d0798d8d2632f4c5fae)。这条链路已超出22:04仅镜像就绪的状态；尚未完成全部功能、效果及正式上线验收。
+
+### 当前验收阻碍与下一步
+
+- **模型执行稳定性**：其他Run出现持续重复thinking、或重复生成工具参数后以length结束，工具无法执行，完整建模未闭环。我22:46已把重复参数的核对结果同步底座。尚缺方舟出口分片，不能最终区分模型输出与网关处理；下一步核对上游增量并做稳定性回归。此问题影响提测验收，不另建日常调试排查页。
+- **模型容量配置**：我22:37明确需要从底座接口获取最大上下文、最大输出窗口，客户私部模型不能直接套官方配置。接口与压缩策略待对齐，未实施。
+- **工作区继续解耦**：我提出将 `<space_id>/assets` 与 `<space_id>/tasks/<task_id>` 分开挂载，以Task目录为工作目录。资产可见性和只读保护、跨轮文件及跨后端编辑仍待落地验证；已有两轮thread复用不能替代双挂载验收。
+
+来源：2026-11-11 Codex《知识编译-agent infra切换》（local，ID `01a19b43-a2c1-7983-9f52-f4d3fc12ae72`）。已核对当日用户取舍、推送、01镜像及副本、文件卡片回读、流式事件和grant验证输出。文件验收轮次 `01a1c8b2-da10-7f41-87d1-7e66ed1976b6`；流式验收 `01a1ca1d-f4ab-7333-902d-245a8f93da08`；最终grant部署 `01a1caa0-bb68-7fc0-96e5-c87fafec78cf`；Lua镜像就绪 `01a1cae8-d8e1-7611-bc6f-dd4757150a53`，22:04镜像就绪后的业务结果已由下方22:12验收补充。
+
+晚间补充来源：同一聊天轮次 `01a1caf6-05d6-7411-8c53-ce68dd89be76`，已核对KC实际open/validate/submit结果、Task完成记录和22:16历史页面的审阅卡片；模型稳定性依据同日22:27–22:41实际运行及本人22:46群内同步（chat_id `oc_5563d46edcd85164ea1305a96efde173`，message_id `om_x100b6073b3b548a0c087f9e4eefa204`）。容量接口要求 `om_x100b6073940394a8c32ecc0e5d5a9c2`。11-12发生的运行另按发生日跟进。

@@ -1,0 +1,7 @@
+{
+  "schema": "agent-graph.action.v1",
+  "id": "payment",
+  "runner": "host",
+  "effect": "external",
+  "handler": "pension.payment"
+}

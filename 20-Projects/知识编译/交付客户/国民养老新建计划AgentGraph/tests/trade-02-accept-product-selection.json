@@ -1,0 +1,44 @@
+{
+  "schema": "agent-graph.test.v1",
+  "name": "trade-02-accept-product-selection",
+  "graph": "purchase-plan",
+  "entry": "default",
+  "state": {
+    "facts": {
+      "snapshot": {
+        "ready": true,
+        "revision": "snapshot-v1"
+      },
+      "context": {
+        "authorized": true,
+        "userId": "demo-user",
+        "caseId": "demo-case",
+        "planId": "demo-plan-b"
+      },
+      "runtime": {
+        "phase": "trade"
+      },
+      "plan": {
+        "effective": false
+      },
+      "decision": {
+        "createDraftAllowed": true,
+        "confirmPlanAllowed": true
+      },
+      "evidence": {
+        "purchase_information": {
+          "valid": true,
+          "receipt": "demo-receipt-purchase_information"
+        },
+        "underwriting": {
+          "valid": true,
+          "receipt": "demo-receipt-underwriting"
+        }
+      }
+    }
+  },
+  "expect": {
+    "statusCode": "waiting-user",
+    "primaryNode": "accept-product-selection"
+  }
+}
