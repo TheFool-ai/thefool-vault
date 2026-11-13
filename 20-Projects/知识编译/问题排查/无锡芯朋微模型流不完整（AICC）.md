@@ -1,13 +1,13 @@
 ---
 created: "2026-11-10"
-updated: "2026-11-12"
+updated: "2026-11-13"
 type: project
 status: investigating
 ---
 
 ## 当前结论
 
-11-09 我处理无锡芯朋微 POC 环境的知识编译失败。已确认两次运行收到部分模型输出后，流结束却没有 `[DONE]`，KC 完整性校验将运行判为失败。上游为何提前结束仍未查明，未修复闭环。11-10 客户再次反馈同类失败，我继续关联模型调用并向底座追查；团队已提供增强日志插件包。11-11李祥柱反馈插件已加好，后续仍需按新日志追查，未修复闭环。
+11-09 我处理无锡芯朋微 POC 环境的知识编译失败。已确认两次运行收到部分模型输出后，流结束却没有 `[DONE]`，KC 完整性校验将运行判为失败。上游为何提前结束仍未查明。11-12我补充故障集中在多轮推理后段、KC目前只走流式接口；团队继续更换诊断插件和AICC SDK，未取得客户长流程回归通过结果。工单当日升P1，仍未闭环。
 
 我17:18同步的排查结果：客户使用 AICC DeepSeek 插件1.5.1，EOF 分支直接结束，异常分支缺少具体错误日志或下游 SSE 错误，现存记录不能区分上游 EOF、读取异常和中间断流。01通用 Sophon 链路与客户插件的路径要分开判断。
 
@@ -15,7 +15,7 @@ status: investigating
 
 ## 问题来源
 
-- 客户售前 POC 故障，经李祥柱在 Oncall 反馈；工单号1002089428，P2，私有化营销Agent V2.5.0，环境5046。
+- 客户售前 POC 故障，经李祥柱在 Oncall 反馈；工单号1002089428，初始P2、11-12升P1，私有化营销Agent V2.5.0，环境5046。
 - 最早已核实反馈：2026-11-06 15:56，李祥柱提供失败任务链接和截图。并非内部日常调试问题；客户实际最早遇到故障的时刻待确认。
 - [客户 Oncall 群](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e)。原消息 `om_x100b61eccf96acbcdde7651188d9a48`（工单）、`om_x100b61ecccf330b8dff9f7c7738be6b`（反馈任务）。尚未核实独立 Meego 缺陷单。
 
@@ -44,6 +44,9 @@ status: investigating
 | 11-10 15:30–18:07 | 何志伟提供 AICC DeepSeek 插件1.5.2，主要增加排查日志；宋梦琦给出包版本2.23.1.16-1。交付包已提供，客户实际部署和编译回归待确认。消息 `om_x100b6018317078b8b32782b7a611351`、`om_x100b601a816a8c44ce33a6d89a824f8`。 |
 | 11-11 15:50 | 李祥柱反馈“插件加好了”，请方赫查日志；确认客户已更新插件，具体运行包版本未再次核实。消息 `om_x100b6075ab8928a8dd7071e7d35847e`。 |
 | 11-11 16:34–21:34 | 李祥柱催查并提供新任务；方赫与何志伟继续核对模型中断，何志伟建议按upstreamId提AICC Oncall，并对照stream/no_stream模型调试。尚无上游根因或长流程回归通过结果。消息 `om_x100b6076c519d0a0c0b97104b87619c`、`om_x100b607291a0fca0ce839a86d1fe126`、`om_x100b6072a75b8cb0cfdc6e7823c50cf`。 |
+| 11-12 10:46–10:48 | 我补充编译在多轮后段出错、问答轮次少，以及KC当前只走流式接口。模型侧问题仍是排查判断，未最终定责。[我的补充](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=246)，消息 `om_x100b6066c912dca4df8cf0bf74419a4`、`om_x100b6066c15924a4df656d6c2c36585`。 |
+| 11-12 14:16–16:22 | 工单升P1。团队补提[插件配置变更7396675913](https://meego.larkoffice.com/io_pmo/deploy_upgrade/detail/7396675913)、[hotfix7396657999](https://meego.larkoffice.com/io_pmo/deploy_upgrade/detail/7396657999)；AICC提供SDK1.0.17试验版，何志伟明确不保证能解决问题。[SDK说明](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=316)。 |
+| 11-12 19:39–21:48 | 李祥柱反馈插件好了；20:56何志伟仍追问变更是否完整。客户模型确认为deepseek-v4.1-flash，21:48内部环境使用客户模型入口可以正常返回。客户实际版本和长流程仍需回归，不能据此记录故障修复。[插件反馈](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=330)、[内部对照结果](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=355)。 |
 
 ## 待办
 

@@ -31,6 +31,16 @@ RAG 每次提问都从零拼答案，知识不会积累。LLM Wiki 把“理解�
 - 工作和生活的实际进展记在日记和项目页，可复用的理解放进 `40-Resources`。
 - 效果看的是用不用得上：下次讨论方案、写周报时，能不能找到旧记录并直接用上。页面数量不重要。
 
+### Codex 怎么找到笔记
+
+本库的 README 把主题和入口页连起来。开源 Codex CLI 的默认指令让模型按需用 `rg` 搜正文、用 `rg --files` 列路径，再读相关文件。终端里用 `@` 找文件时，会临时遍历目录，按路径做模糊匹配。截至 2026-11-12，公开主线里未见打开项目就把全库正文分块、向量化并持久保存的默认流程。[Codex 默认搜索指令](https://github.com/openai/codex/blob/c0cc9fc820f62e4dbdde68214dd6d792d6c8a7ee/codex-rs/protocol/src/prompts/base_instructions/default.md#L264) · [终端文件搜索实现](https://github.com/openai/codex/blob/c0cc9fc820f62e4dbdde68214dd6d792d6c8a7ee/codex-rs/tui/src/file_search.rs#L53-L89)
+
+### Zoekt 怎么索引代码正文
+
+Zoekt 给文件名和正文建带位置的三元组倒排索引。每三个相邻字符对应一份出现位置列表。搜 `retryPolicy` 时，假设选中 `ret` 和 `Pol`，就先找两者起点恰好相距 5 个字符的位置，再核对完整字符串。正则也能用其中必定出现的文本缩小候选范围。索引分片落盘，适合反复跨仓搜符号、日志和代码片段。面对“失败后在哪里重试”这样的提问，仍需要人或 Agent 提出 `retry`、`backoff` 等搜索线索。
+
+来源（2026-11-12）：[Zoekt 设计文档](https://github.com/sourcegraph/zoekt/blob/ad747a07af56ea767ab659de5cf445bad5500e79/doc/design.md) · [查询时如何选三元组](https://github.com/sourcegraph/zoekt/blob/ad747a07af56ea767ab659de5cf445bad5500e79/index/indexdata.go#L343-L365)。
+
 ## 团队实践：Context
 
 Context（context4ai/context）把“提前编译理解”用在研发知识上。Agent 读代码和文档，按问题组织知识页，每个小节保留证据入口。下次提问先读知识页，需要核实实现时再读对应版本的源码。来源变化时，按影响范围重审和更新。
