@@ -1,11 +1,14 @@
 ---
 created: "2026-11-10"
-updated: "2026-11-13"
+updated: "2026-11-14"
 type: project
 status: investigating
 ---
 
 ## 当前结论
+
+11-13交付侧先将默认模型切到Ark保障客户使用，李祥柱反馈切换后运行变快；这是团队的绕行方案。AICC更新SDK的对照测试和客户长流程回归仍需继续，原始断流根因未闭环，不归为本人已修复成果。
+
 
 11-09 我处理无锡芯朋微 POC 环境的知识编译失败。已确认两次运行收到部分模型输出后，流结束却没有 `[DONE]`，KC 完整性校验将运行判为失败。上游为何提前结束仍未查明。11-12我补充故障集中在多轮推理后段、KC目前只走流式接口；团队继续更换诊断插件和AICC SDK，未取得客户长流程回归通过结果。工单当日升P1，仍未闭环。
 
@@ -47,12 +50,13 @@ status: investigating
 | 11-12 10:46–10:48 | 我补充编译在多轮后段出错、问答轮次少，以及KC当前只走流式接口。模型侧问题仍是排查判断，未最终定责。[我的补充](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=246)，消息 `om_x100b6066c912dca4df8cf0bf74419a4`、`om_x100b6066c15924a4df656d6c2c36585`。 |
 | 11-12 14:16–16:22 | 工单升P1。团队补提[插件配置变更7396675913](https://meego.larkoffice.com/io_pmo/deploy_upgrade/detail/7396675913)、[hotfix7396657999](https://meego.larkoffice.com/io_pmo/deploy_upgrade/detail/7396657999)；AICC提供SDK1.0.17试验版，何志伟明确不保证能解决问题。[SDK说明](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=316)。 |
 | 11-12 19:39–21:48 | 李祥柱反馈插件好了；20:56何志伟仍追问变更是否完整。客户模型确认为deepseek-v4.1-flash，21:48内部环境使用客户模型入口可以正常返回。客户实际版本和长流程仍需回归，不能据此记录故障修复。[插件反馈](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=330)、[内部对照结果](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=355)。 |
+| 11-13 11:38–14:48 | 方赫确认默认模型切到Ark，先保障客户使用；AICC新SDK拟通过额外接入点测试，不切回主模型。[切换确认](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=363)、[并行测试安排](https://applink.feishu.cn/client/chat/open?openChatId=oc_592d26cebca93ca62509c68e72808d1e&position=370)。 |
 
 ## 待办
 
 - 按新日志的upstreamId关联AICC原始结束原因与最后一帧，跟进Oncall及stream/no_stream对照结果；插件更新不等于修复闭环。
 - 核对修复后是否能传递真实失败原因，再回归客户长流程，不能只验证简单连通性或Function Call。
 
-其他依据：11-09 Codex《排查 Minibase 流式响应异常》（local，ID 01a1bf62-a838-7881-afe2-7ceb0c0ba455）；[本地通用链路代码证据](/tmp/sophon-audit-20261109/decompiled/com/bytedance/dp/io/listener/LLMEventSourceListener.java:116)。
+其他依据：11-09 Codex《排查 Minibase 流式响应异常》（local，ID 01a1bf62-a838-7881-afe2-7ceb0c0ba455）；当时的通用链路代码证据为 `LLMEventSourceListener.java:116`，临时副本已失效，回溯以同日聊天为准。
 
 11-10补充来源：同一 Oncall 群的原始消息与 Codex《排查 Minibase 流式响应异常》（local，ID 01a1bf62-a838-7881-afe2-7ceb0c0ba455）。诊断插件 hotfix7396471328 与[实例抽取协议变更7395719796](无锡芯朋微实例抽取协议不兼容.md)分别跟进。
