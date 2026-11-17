@@ -1,6 +1,6 @@
 ---
 created: 2026-11-02
-updated: "2026-11-14"
+updated: "2026-11-17"
 type: requirement
 requirement_created: 2026-08-31
 meego_id: "7372003123"
@@ -8,7 +8,77 @@ meego_id: "7372003123"
 
 知识编译项目下的技术需求，Meego：[【知识编译】Agent Infra](https://meego.larkoffice.com/xqd1pw/story/detail/7372003123)。
 
-## 当前进展（截至11-13）
+## 当前进展（截至11-16）
+
+我决定接入agent-runtime时保持前端逻辑与原协议，由KC承接原有任务卡、轮询和历史回放。前端阶段标签改动已撤回，review分支为 `877bc8e27`，与合入的2.6.0基线文件一致。
+
+01前端已回退到 `v2.6.0-20261108170133`（`8d802ad47`）；KC已更新到 `kc-review-9d96766d-20261116`，业务代码对应review提交 `883a4dd3`。两端副本均就绪，本次未新建业务会话验收。Control、CLI、VeraG、OpenApplication四个服务的review分支仍待我逐个审阅，没有随本次发布更新。
+
+团队11-16同步由刘凌洲拉出2.7.0发布分支、合并2.6.0并负责部署发布，我再合入对应改动。Meego现为开发中，Server开发预计11-18结束；正式提测日期和回执待确认。11-05提出的11-16提测作为历史目标保留。
+
+## 11-16兼容原前端与01发布
+
+### 接入边界与实际交付
+
+- 我要求前端保持原逻辑，后端复用既有任务卡链路。前端review分支已撤回阶段标签改动并推送 [877bc8e27](https://code.byted.org/dp/cdpfe/commit/877bc8e27f9961ce53ec20443bd7f65ccf111db2)。原前端仍展示百分比；流式阶段的轮询不会逐阶段刷新标题，不再以11-14新增状态标签作为本轮交付目标。
+- 01前端回退到旧包，实际容器已核对提交 `8d802ad47`，1/1就绪。
+- KC review业务代码已部署01。发布提交 `9d96766d`只调整构建清单，业务内容仍对应 `883a4dd3`；Bit Flux #1413与Koala发布完成，部署任务 `6afa770c332effc5b0b0842b`，镜像和就绪校验通过。
+- 四个配套服务继续用 `codex/7372003123-runtime-review` 审阅：VeraG `e550d56f`负责页面身份透传，Control `d0ee159`负责沙箱profile、镜像与心跳，CLI `12d251f`负责Run回调凭据和Skill，OpenApplication `7edec5e6`删除会话凭据日志。此次仅前端与KC发布，四个服务未随本次更新。
+
+### 发布协作与提测
+
+11-16 18:06萧启程同步：`feat/control-fe`承载异步任务，刘凌洲负责拉2.7.0发布分支、合入2.6.0并负责部署发布；我合入2.7.0。当前为协作安排，尚无分支创建、我的合码或整体验收完成回执。
+
+11-16只读Meego：状态“开发中”，当前包括Server开发、FE开发和测试方案设计；Server开发预计结束为11-18，QA字段为李振琪、田佳文、田晓婧。字段与11-05晚会的提测、QA安排分别保留，正式提测日与具体对接人待确认。
+
+### 配套鉴权协作（11-16晚）
+
+我提出与石浩枫核对重复的超级Token逻辑，确认如何合并。石浩枫22:31–22:32反馈代码已在2.6.0分支合入并验证可用；这是协作方反馈，尚未证明我的review分支已完成整合、合入2.7.0或业务验收。
+
+来源：[我的整合要求](https://applink.feishu.cn/client/chat/open?openChatId=oc_5563d46edcd85164ea1305a96efde173&position=258)、[石浩枫的合码与验证反馈](https://applink.feishu.cn/client/chat/open?openChatId=oc_5563d46edcd85164ea1305a96efde173&position=263)，2026-11-16。
+
+11-16 22:24我提出与石浩枫侧的超级Token逻辑可能重复，需要合并；22:31–22:32石浩枫反馈其代码已在2.6.0分支、验证可用。这是配套服务的协作方反馈，我的review与2.7.0合码继续跟进。[重复逻辑核对](https://applink.feishu.cn/client/chat/open?openChatId=oc_5563d46edcd85164ea1305a96efde173&position=258)、[协作方确认](https://applink.feishu.cn/client/chat/open?openChatId=oc_5563d46edcd85164ea1305a96efde173&position=263)。
+
+### 下一步
+
+- 我逐个review四个配套服务，和石浩枫核对重复鉴权逻辑，再与刘凌洲对齐2.7.0分支后安排合码；不能把review分支已推送当作已合入发布分支。
+- 用原前端验收KC接入后的抽取、建图、刷新、产物和等待体验，补正式提测回执；尚无新一轮业务验收结果。
+- 其余8个生产接口覆盖范围、双挂载、跨轮文件及跨后端编辑继续收敛。双卡和轮末等待仍缺闭环结论，保留在本需求页。
+
+来源：11-16 Codex《知识编译-agent infra切换》（local，`01a19b43-a2c1-7983-9f52-f4d3fc12ae72`），边界决定及前端撤回轮次 `01a1e24d-638c-7b11-a30e-75a1e14229c4`，推送与01发布回执 `01a1e257-09ad-7300-96f6-755eac4d6a19`，四服务review说明 `01a1e27a-5cf5-7e20-b3d2-b159b0e00b47`。团队[2.7.0发布分工](https://applink.feishu.cn/client/chat/open?openChatId=oc_2b0aff79f4c7c9797be58b61bf28f692&position=274)；[Meego工作项](https://meego.larkoffice.com/xqd1pw/story/detail/7372003123)11-16概况字段。
+
+## 11-14交付与代码Review
+
+### 抽取进度已部署01
+
+- KC业务提交 `64da842e`：初始卡片、实时事件、轮询和历史回读保留当前阶段、计数、进度及更新时间，340项相关回归通过。部署镜像为 `kc-stage-02bb0f87-20261114`，实际副本就绪。
+- 前端提交 `4adb77725`：抽取卡片展示具体子阶段和计数，结束时保留最终状态；01运行包已核实该提交。19:43后的真实页面回读见抽取卡片，进度由68.11%到75.2%。完整阶段切换与刷新效果仍由我验收。
+- 真实业务Task `a1d00623925e441fa23fe8012492078f`已有Schema、实例产物和图谱草稿；另一Task `94657a8d605348d5916726b786e1908a`在20:26:11正式提交Schema，20:26:38又生成普通JSON文件卡。不能用有产物代替所有交付体验均验收通过。
+
+### 六仓Review交付
+
+统一分支：`codex/7372003123-runtime-review`。以下为11-14核实的远端提交；前端撤回与KC部署的后续变化见11-16记录。
+
+| 仓库 | 提交 | Review入口 |
+| --- | --- | --- |
+| KC | `883a4dd3` | [knowledge-compiler](https://code.byted.org/dp/knowledge-compiler/tree/codex/7372003123-runtime-review) |
+| Control | `d0ee159` | [agent_runtime_control](https://code.byted.org/dp/agent_runtime_control/tree/codex/7372003123-runtime-review) |
+| CLI | `12d251f` | [kb-cli](https://code.byted.org/dp/kb-cli/tree/codex/7372003123-runtime-review) |
+| VeraG | `e550d56f` | [verag](https://code.byted.org/dp/verag/tree/codex/7372003123-runtime-review) |
+| 前端 | `3ce6d0819` | [cdpfe](https://code.byted.org/dp/cdpfe/tree/codex/7372003123-runtime-review) |
+| OpenApplication | `7edec5e6` | [open_application](https://code.byted.org/dp/open_application/tree/codex/7372003123-runtime-review) |
+
+KC将沙箱Hook从HTTP客户端拆出，用独立绑定入口呈现agent.before、tool.before、tool.after，另拆Bash建Task检测。定向108项回归通过，VeraG161项通过；KC全量10,362项通过、321项跳过、9项失败，全量尚未全绿。其他仓库验证范围以原会话为准，不据此认定六仓整体回归已通过。
+
+### 验收与下一步
+
+- 我自己做页面业务验收，并review六仓代码，确认后再安排合码与发布。
+- 影响当前体验的缺口：轮末压缩与持久化仍可能延后任务卡出现；Schema提交后额外导出普通JSON导致双卡。下一步确认收尾时机与默认交付行为，未决定提前出卡，11-12轮末登记约定继续有效。
+- 其余生产接口、双挂载、跨轮文件与跨后端编辑继续按本轮范围收敛，不能从单条建模链路已有产物推定全部完成。
+
+来源：11-14 Codex《知识编译-agent infra切换》（local，`01a19b43-a2c1-7983-9f52-f4d3fc12ae72`），进度实现轮次 `01a1d8f5-abe6-7210-9d59-440204695023`，01部署及本人验收安排 `01a1d93a-2d97-74e2-a16e-9e5f2934fa02`，前端交付 `01a1d95b-4b0b-7e10-90a2-9385eaa2a4a4`，真实卡片回读 `01a1d9de-e3b3-7d03-ad2f-27ebd079bcf0`，Schema与双卡核实 `01a1da11-746d-78e2-83db-465696a18e35`，六仓推送与测试 `01a1da20-7b75-7711-bbd3-88189196bb8f`。飞书[前端构建成功](https://applink.feishu.cn/client/chat/open?openChatId=oc_d7c80d2fc65411bbea82f3debfa85d3e&position=496)及[01部署完成](https://applink.feishu.cn/client/chat/open?openChatId=oc_5c3e374d1d83fa6f9fd51bbfce40d2be&position=191)交叉印证部署，不作为业务验收结论。
+
+## 11-13异步交接与Skill同步
 
 我推进页面异步Job交接和本体Skill自修指引：KC确认抽取或建图Job已关联本轮后，通过 `tool.after` 提示Agent停止主动轮询，由任务卡跟进；KC `3009da11`已部署01、307项回归通过。该指引不是硬拦截，通用Agent共用CLI的流程保持原样，真实模型行为仍待验收。
 
@@ -29,8 +99,8 @@ meego_id: "7372003123"
 
 - 我的优先级清单仍为 **P1**；11-04 曾待线下讨论，11-05 团队晚会已安排按 **S21、2.7.0** 推进。
 - 目标仍为完成沙箱接入、测试与上线，并支持降级。
-- 最新节点：**11-16 开发完提测**，我与杨宇航协作，QA 赵林柳；计划做双线效果评测。11-02 的开发、联调周次已被此安排替代。
-- Meego 当前优先级仍为 P0、节点为“需求排期”，本页按我的最新清单记录；外部工作项未修改。
+- 11-05当时目标：**11-16 开发完提测**，我与杨宇航协作，QA 赵林柳；计划做双线效果评测。11-02 的开发、联调周次已被此安排替代。
+- 当时Meego优先级为P0、节点为“需求排期”；当前流程与排期见11-16记录，外部工作项未修改。
 
 来源：11-04 我的 [S21 清单](S21需求.md)；11-05 21:36 萧启程发布的[晚会安排](https://applink.feishu.cn/client/chat/open?openChatId=oc_2b0aff79f4c7c9797be58b61bf28f692&position=219)。11-06 只读 Meego 仍为“需求排期”，不据此否定新排期。
 
@@ -38,7 +108,7 @@ meego_id: "7372003123"
 
 | 阶段 | 时间 | 目标 | 进展 |
 | --- | --- | --- | --- |
-| 开发与提测 | **2026-11-16 开发完提测** | 我与杨宇航协作完成接入 | Schema提交已验通；抽取Run回调、任务卡和轮次末尾登记已部署01，真实页面排序、其余生产接口覆盖、稳定性与工作区验收待补 |
+| 开发与提测 | 11-05目标11-16；11-16读取Meego的Server开发预计止11-18，正式提测待确认 | 我与杨宇航协作完成接入 | 01原前端已恢复，KC review业务代码已部署；剩余服务review、2.7.0合码与业务验收继续推进 |
 | 效果评测 | 随提测对齐 | 双线效果评测；QA 赵林柳 | 测评口径、环境与结果待补充 |
 | 上线 | **S21，2.7.0** | 沙箱接入、可降级 | 尚无正式上线结果 |
 
