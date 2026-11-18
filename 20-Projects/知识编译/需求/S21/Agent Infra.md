@@ -1,6 +1,6 @@
 ---
 created: 2026-11-02
-updated: "2026-11-17"
+updated: "2026-11-18"
 type: requirement
 requirement_created: 2026-08-31
 meego_id: "7372003123"
@@ -8,13 +8,29 @@ meego_id: "7372003123"
 
 知识编译项目下的技术需求，Meego：[【知识编译】Agent Infra](https://meego.larkoffice.com/xqd1pw/story/detail/7372003123)。
 
-## 当前进展（截至11-16）
+## 当前进展（截至11-17）
 
 我决定接入agent-runtime时保持前端逻辑与原协议，由KC承接原有任务卡、轮询和历史回放。前端阶段标签改动已撤回，review分支为 `877bc8e27`，与合入的2.6.0基线文件一致。
 
 01前端已回退到 `v2.6.0-20261108170133`（`8d802ad47`）；KC已更新到 `kc-review-9d96766d-20261116`，业务代码对应review提交 `883a4dd3`。两端副本均就绪，本次未新建业务会话验收。Control、CLI、VeraG、OpenApplication四个服务的review分支仍待我逐个审阅，没有随本次发布更新。
 
-团队11-16同步由刘凌洲拉出2.7.0发布分支、合并2.6.0并负责部署发布，我再合入对应改动。Meego现为开发中，Server开发预计11-18结束；正式提测日期和回执待确认。11-05提出的11-16提测作为历史目标保留。
+刘凌洲11-17 21:52明确提供Control的 `feat/2.7.0` 分支，远端已核实存在；11-16约定由他负责发布分支与部署、我合入对应改动。我的合码与新一轮业务验收仍待确认。Server开发预计11-18结束，正式提测日期和回执待确认；11-05提出的11-16提测保留为历史目标。
+
+## 11-17切换策略
+
+我与费夕杨确认：本迭代先切一部分，优先在presale观察，保留开关降级；正式客户继续使用原链路，等稳定后再切。此为发布策略，尚无presale切换完成或客户上线结果。
+
+11-17研发周会材料的阶段汇报为“接口对接完成、代码CR中”，同时写开发进度90%。这是阶段汇报，实际合码、部署与验收仍按各自产物核实。
+
+来源：11-17 11:38[我的方案](https://applink.feishu.cn/client/chat/open?openChatId=oc_15d5cdd538df73b4975ff96d38c7790a&position=12876)、[先presale观察](https://applink.feishu.cn/client/chat/open?openChatId=oc_15d5cdd538df73b4975ff96d38c7790a&position=12877)，11:39[产品确认](https://applink.feishu.cn/client/chat/open?openChatId=oc_15d5cdd538df73b4975ff96d38c7790a&position=12878)；[11-17研发周会材料](https://bytedance.larkoffice.com/wiki/WmoYw2gh7iPPpskIjztce5FUnDd)。
+
+## 11-17发布分支
+
+刘凌洲21:52回复前一日的发布分工消息，向我提供 `feat/2.7.0`。已核实[Control远端分支](https://code.byted.org/dp/agent_runtime_control/tree/feat/2.7.0)存在，当前提交 `d45fc8d7`。该分支的2.6.0合并情况、是否已含我的review改动及本人合码结果仍待确认。
+
+下一步：先核对Control分支基线和已有改动，再对照 `codex/7372003123-runtime-review` 整合本人负责部分；其他三个服务继续分别review，随后完成业务验收和提测交接。01前端回退与KC发布结果仍按11-16记录，不能把新分支给出当作已发布或已验收。
+
+来源：11-17 21:52[刘凌洲给出的分支](https://applink.feishu.cn/client/chat/open?openChatId=oc_2b0aff79f4c7c9797be58b61bf28f692&position=282)，消息 `om_x100b60f18e4bd8a4b08186aab5eb469`，直接回复11-16[发布分工](https://applink.feishu.cn/client/chat/open?openChatId=oc_2b0aff79f4c7c9797be58b61bf28f692&position=274)；Control远端引用已只读核对。
 
 ## 11-16兼容原前端与01发布
 
@@ -36,8 +52,6 @@ meego_id: "7372003123"
 我提出与石浩枫核对重复的超级Token逻辑，确认如何合并。石浩枫22:31–22:32反馈代码已在2.6.0分支合入并验证可用；这是协作方反馈，尚未证明我的review分支已完成整合、合入2.7.0或业务验收。
 
 来源：[我的整合要求](https://applink.feishu.cn/client/chat/open?openChatId=oc_5563d46edcd85164ea1305a96efde173&position=258)、[石浩枫的合码与验证反馈](https://applink.feishu.cn/client/chat/open?openChatId=oc_5563d46edcd85164ea1305a96efde173&position=263)，2026-11-16。
-
-11-16 22:24我提出与石浩枫侧的超级Token逻辑可能重复，需要合并；22:31–22:32石浩枫反馈其代码已在2.6.0分支、验证可用。这是配套服务的协作方反馈，我的review与2.7.0合码继续跟进。[重复逻辑核对](https://applink.feishu.cn/client/chat/open?openChatId=oc_5563d46edcd85164ea1305a96efde173&position=258)、[协作方确认](https://applink.feishu.cn/client/chat/open?openChatId=oc_5563d46edcd85164ea1305a96efde173&position=263)。
 
 ### 下一步
 

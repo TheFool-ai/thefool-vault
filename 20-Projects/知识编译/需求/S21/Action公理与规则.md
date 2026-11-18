@@ -1,6 +1,6 @@
 ---
 created: "2026-11-04"
-updated: "2026-11-11"
+updated: "2026-11-18"
 type: requirement
 requirement_created: "2026-11-02"
 status: planned
@@ -44,6 +44,14 @@ S21规划会将“支持 Action”的本期目标设为完成测试。具体功�
 来源：[知识引擎 Sprint21 规划会原始逐字稿](https://bytedance.sg.larkoffice.com/minutes/obsg5l74712blnzlibh7c4y7)，2026-11-10，18:36–18:46。相邻知识编译需求讨论了提测日调整，但未明确对应本项，不据此填具体日期。
 
 [11-10研发周会材料](https://bytedance.larkoffice.com/wiki/KlFcwvRm6i5JpWkZcCnc3vv6nfE)记录：团队已完成规则、公理、Action构建算子及推理引擎的开发与验证；后续计划是产品动线/UI与算子打通、公理规则效果优化、Dynamic Workflow对接和全链路验证。材料未明确我的具体贡献及本需求完整验收结果，个人进度继续分开核实。
+
+## 11-17 标品与评测边界
+
+双周会材料将公理、规则的标品迭代列为“设计中”，计划信通院评测后复用部分代码继续推进。Action内连接器和实际执行交给Agent层，不在本体构建时完成。评测Demo、数据与样板间属于团队评测准备，不能等同于我的标品交付。
+
+11-10已记录的构建算子开发与验证，与本次标品设计分开看；具体接口、验收用例及我的开发结果继续补充。
+
+来源：[知识引擎产研双周会11.17材料](https://bytedance.larkoffice.com/wiki/Cw1NwJe0MifDDWkcu6Qc9tcWncd)，知识编译本双周进展。
 
 ## 待办
 
